@@ -1,0 +1,19 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t jckonewalik/react-test -f ./client/Dockerfile.dev .
+
+script:
+  - docker run -e CI=true jckonewalik/react-test npm test
+
+after_success:
+  - docker build -t jckonewalik/multi-client ./client
+  - docker build -t jckonewalik/multi-nginx ./nginx
+  - docker build -t jckonewalik/multi-server ./server
+  - docker build -t jckonewalik/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push jckonewalik/multi-client
+  - docker push jckonewalik/multi-nginx
+  - docker push jckonewalik/multi-server
+  - docker push jckonewalik/multi-worker
