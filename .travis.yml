@@ -2,7 +2,7 @@ sudo: required
 services:
   - docker
 before_install:
-  - docker build -t jckonewalik/react-test -f ./client/Dockerfile.dev .
+  - docker build -t jckonewalik/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true jckonewalik/react-test npm test
